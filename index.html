@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pivvy: clothing reviews with real sizing</title>
+  <meta name="description" content="Pivvy is a photo and video app for clothing reviews where every creator shares their height, sizes, and measurements, so you can tell if clothes will fit you.">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Pivvy home">
+        <img src="images/logo.png" alt="">
+        <span class="wordmark">P<span class="i">ı<span class="ring"></span></span>vvy</span>
+      </a>
+      <nav>
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="story.html">Our Story</a>
+        <a href="rules.html">Community Rules</a>
+        <a href="support.html">Support</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <img class="hero-logo" src="images/logo.png" alt="The Pivvy logo, a Dalmatian">
+        <p class="label">Clothing reviews, with the sizing</p>
+        <h1>See how clothes fit on bodies like yours.</h1>
+        <p class="lede">Pivvy is a photo and video app for clothing reviews. Every creator shares their height, sizes, and measurements, so you can tell if something will fit you before you buy it.</p>
+        <a class="button" href="#beta">Join the beta</a>
+      </section>
+
+      <!-- The three app screenshots. To add one, put the picture in the images folder as
+           screen-1.png, screen-2.png, or screen-3.png, and replace its placeholder div with:
+           <img src="images/screen-1.png" alt="(what the screenshot shows)"> -->
+      <section class="shots" aria-label="Pivvy app screenshots">
+        <figure class="shot">
+          <div class="placeholder">Screenshot 1</div>
+          <figcaption>Fit reviews</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="placeholder">Screenshot 2</div>
+          <figcaption>Your matches</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="placeholder">Screenshot 3</div>
+          <figcaption>Real sizing</figcaption>
+        </figure>
+      </section>
+
+      <section class="steps" aria-label="How Pivvy works">
+        <div class="card">
+          <h2>1. Add your size</h2>
+          <p>Enter your height, sizes, and measurements. It's optional, and it stays private unless you choose to show it on a post.</p>
+        </div>
+        <div class="card">
+          <h2>2. Find your matches</h2>
+          <p>Posts from people whose height and measurements are close to yours show a MATCH badge with a percent, like MATCH 94%.</p>
+        </div>
+        <div class="card">
+          <h2>3. Know your size</h2>
+          <p>Every fit review says the size they wore and whether they sized up, went true to size, or sized down. No more guessing.</p>
+        </div>
+      </section>
+
+      <section class="beta card" id="beta">
+        <h2 class="serif">Join the beta</h2>
+        <p>Pivvy is coming to iPhone. Leave your email and we'll send you an invite to try it early.</p>
+        <form id="beta-form" novalidate>
+          <label class="label" for="beta-email" style="position:absolute;left:-9999px">Email</label>
+          <input id="beta-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required maxlength="254">
+          <button class="button" type="submit">Join</button>
+        </form>
+        <p class="message" id="beta-message" role="status"></p>
+        <p class="note">We only use your email to send your beta invite and launch news. See our <a href="https://fittap.github.io/privacy/">privacy policy</a>.</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Join the beta: saves the email in Supabase (the beta_signups table). The site can only add
+    // emails, never read them; the list is in the Supabase dashboard, Table Editor, beta_signups.
+    // This key is Supabase's publishable key, which is safe to show on a web page.
+    const SUPABASE_URL = 'https://vcmgnqhxerrbdcdkpgfi.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_XougXZvyG7jXKryZA-01Ww_fykRQ0V2';
+
+    const form = document.getElementById('beta-form');
+    const input = document.getElementById('beta-email');
+    const message = document.getElementById('beta-message');
+    const button = form.querySelector('button');
+
+    function show(text, isError) {
+      message.textContent = text;
+      message.classList.toggle('error', !!isError);
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = input.value.trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        show('Please enter a valid email address.', true);
+        return;
+      }
+      button.disabled = true;
+      show('');
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/beta_signups', {
+          method: 'POST',
+          headers: {
+            apikey: SUPABASE_KEY,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({ email }),
+        });
+        // 409 means the email is already on the list, which is fine.
+        if (res.ok || res.status === 409) {
+          form.reset();
+          show("You're on the list! We'll email you when your invite is ready.");
+        } else {
+          show('Something went wrong. Please try again in a moment.', true);
+        }
+      } catch (e) {
+        show("Couldn't connect. Please check your internet and try again.", true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+  <footer>
+    <div class="wrap">
+      <div class="links">
+        <span>© 2026 Pivvy</span>
+        <a href="https://fittap.github.io/privacy/">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="rules.html">Community Rules</a>
+        <a href="support.html">Support</a>
+      </div>
+      <div class="links">
+        <a href="https://www.instagram.com/getpivvy/">Instagram @getpivvy</a>
+        <a href="https://www.tiktok.com/@getpivvy">TikTok @getpivvy</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
