@@ -89,6 +89,13 @@ main { padding: 48px 0 64px; }
 .beta .message { min-height: 1.6em; margin: 12px 0 0; font-weight: 600; }
 .beta .message.error { color: var(--error); }
 
+/* Home: Become a Founding Creator (the same card, with the fields stacked). */
+.beta form.stack { flex-direction: column; text-align: left; }
+.beta form.stack .label { margin: 8px 0 0; }
+.beta form.stack .button { align-self: center; margin-top: 8px; }
+.beta .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 8px; font-size: 15px; cursor: pointer; }
+.beta .check input { flex: none; width: 20px; height: 20px; margin: 2px 0 0; padding: 0; accent-color: var(--accent); }
+
 .draft { background: #FFF4D6; border: 1px solid #E8D39A; border-radius: 18px; padding: 14px 20px; margin: 0 0 24px; font-size: 15px; }
 
 /* Footer. */

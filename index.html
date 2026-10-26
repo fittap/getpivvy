@@ -67,6 +67,24 @@
         <p class="message" id="beta-message" role="status"></p>
         <p class="note">We only use your email to send your beta invite and launch news. See our <a href="https://fittap.github.io/privacy/">privacy policy</a>.</p>
       </section>
+
+      <section class="beta card" id="creators">
+        <h2 class="serif">Become a Founding Creator</h2>
+        <p>Post fit reviews with your real sizing and help shape Pivvy from the start.</p>
+        <form id="creator-form" class="stack" novalidate>
+          <label class="label" for="creator-email">Email</label>
+          <input id="creator-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required maxlength="254">
+          <label class="label" for="creator-handle">Instagram or TikTok handle</label>
+          <input id="creator-handle" type="text" name="handle" placeholder="@yourname" autocomplete="off" autocapitalize="none" spellcheck="false" required maxlength="60">
+          <label class="check">
+            <input id="creator-agree" type="checkbox" name="agree" required>
+            <span>I’m 18 or older and agree to the <a href="rules.html">Community Rules</a>.</span>
+          </label>
+          <button class="button" type="submit">Request an invite</button>
+        </form>
+        <p class="message" id="creator-message" role="status"></p>
+        <p class="note">We only use this to review your request and contact you about it. See our <a href="https://fittap.github.io/privacy/">privacy policy</a>.</p>
+      </section>
     </div>
   </main>
 
@@ -117,6 +135,72 @@
         show("Couldn't connect. Please check your internet and try again.", true);
       } finally {
         button.disabled = false;
+      }
+    });
+
+    // Become a Founding Creator: saves the request in Supabase (the creator_applications table).
+    // Like the beta list, the site can only add requests, never read them; they're in the
+    // Supabase dashboard, Table Editor, creator_applications.
+    const creatorForm = document.getElementById('creator-form');
+    const creatorEmail = document.getElementById('creator-email');
+    const creatorHandle = document.getElementById('creator-handle');
+    const creatorAgree = document.getElementById('creator-agree');
+    const creatorMessage = document.getElementById('creator-message');
+    const creatorButton = creatorForm.querySelector('button');
+
+    function showCreator(text, isError) {
+      creatorMessage.textContent = text;
+      creatorMessage.classList.toggle('error', !!isError);
+    }
+
+    // Accepts "@name", "name", or a pasted profile link, and keeps just the username.
+    function cleanHandle(text) {
+      return text.trim()
+        .replace(/^https?:\/\//i, '')
+        .replace(/^(www\.)?(instagram\.com|tiktok\.com)\//i, '')
+        .replace(/^@/, '')
+        .replace(/[/?].*$/, '');
+    }
+
+    creatorForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = creatorEmail.value.trim().toLowerCase();
+      const handle = cleanHandle(creatorHandle.value);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showCreator('Please enter a valid email address.', true);
+        return;
+      }
+      if (!/^[A-Za-z0-9._]{1,30}$/.test(handle)) {
+        showCreator('Please enter your Instagram or TikTok handle, like @yourname.', true);
+        return;
+      }
+      if (!creatorAgree.checked) {
+        showCreator('Please confirm you’re 18 or older and agree to the Community Rules.', true);
+        return;
+      }
+      creatorButton.disabled = true;
+      showCreator('');
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/creator_applications', {
+          method: 'POST',
+          headers: {
+            apikey: SUPABASE_KEY,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({ email, handle, agreed_rules: true }),
+        });
+        // 409 means this email already asked, which is fine.
+        if (res.ok || res.status === 409) {
+          creatorForm.reset();
+          showCreator('Thanks! We’ll be in touch soon.');
+        } else {
+          showCreator('Something went wrong. Please try again in a moment.', true);
+        }
+      } catch (e) {
+        showCreator("Couldn't connect. Please check your internet and try again.", true);
+      } finally {
+        creatorButton.disabled = false;
       }
     });
   </script>
