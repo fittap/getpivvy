@@ -91,6 +91,11 @@ main { padding: 48px 0 64px; }
 .beta .message { min-height: 1.6em; margin: 12px 0 0; font-weight: 600; }
 .beta .message.error { color: var(--error); }
 
+/* Labels only screen readers read, and the hidden box only bots fill in. */
+.hidden-label { position: absolute; left: -9999px; }
+.updated { color: var(--muted); }
+.trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
 /* Home: Become a Founding Creator (the same card, with the fields stacked). */
 .beta form.stack { flex-direction: column; text-align: left; }
 .beta form.stack .label { margin: 8px 0 0; }

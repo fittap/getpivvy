@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Security: only Pivvy's own scripts run, and the forms only talk to Supabase. GitHub Pages
+       can't send security headers, so these go in each page. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src https://vcmgnqhxerrbdcdkpgfi.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Pivvy: clothing reviews with real sizing</title>
   <meta name="description" content="Pivvy is a photo and video app for clothing reviews where every creator shares their height, sizes, and measurements, so you can tell if clothes will fit you.">
   <link rel="icon" type="image/png" href="images/favicon.png">
@@ -61,8 +65,9 @@
         <h2 class="serif">Join the beta</h2>
         <p>Pivvy is coming to iPhone. Leave your email and we'll send you an invite to try it early.</p>
         <form id="beta-form" novalidate>
-          <label class="label" for="beta-email" style="position:absolute;left:-9999px">Email</label>
+          <label class="label hidden-label" for="beta-email">Email</label>
           <input id="beta-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required maxlength="254">
+          <div class="trap" aria-hidden="true"><label>Leave this empty <input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
           <button class="button" type="submit">Join</button>
         </form>
         <p class="message" id="beta-message" role="status"></p>
@@ -81,6 +86,7 @@
             <input id="creator-agree" type="checkbox" name="agree" required>
             <span>I’m 18 or older and agree to the <a href="rules.html">Community Rules</a>.</span>
           </label>
+          <div class="trap" aria-hidden="true"><label>Leave this empty <input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
           <button class="button" type="submit">Request an invite</button>
         </form>
         <p class="message" id="creator-message" role="status"></p>
@@ -89,122 +95,7 @@
     </div>
   </main>
 
-  <script>
-    // Join the beta: saves the email in Supabase (the beta_signups table). The site can only add
-    // emails, never read them; the list is in the Supabase dashboard, Table Editor, beta_signups.
-    // This key is Supabase's publishable key, which is safe to show on a web page.
-    const SUPABASE_URL = 'https://vcmgnqhxerrbdcdkpgfi.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_XougXZvyG7jXKryZA-01Ww_fykRQ0V2';
-
-    const form = document.getElementById('beta-form');
-    const input = document.getElementById('beta-email');
-    const message = document.getElementById('beta-message');
-    const button = form.querySelector('button');
-
-    function show(text, isError) {
-      message.textContent = text;
-      message.classList.toggle('error', !!isError);
-    }
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const email = input.value.trim().toLowerCase();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        show('Please enter a valid email address.', true);
-        return;
-      }
-      button.disabled = true;
-      show('');
-      try {
-        const res = await fetch(SUPABASE_URL + '/rest/v1/beta_signups', {
-          method: 'POST',
-          headers: {
-            apikey: SUPABASE_KEY,
-            'Content-Type': 'application/json',
-            Prefer: 'return=minimal',
-          },
-          body: JSON.stringify({ email }),
-        });
-        // 409 means the email is already on the list, which is fine.
-        if (res.ok || res.status === 409) {
-          form.reset();
-          show("You're on the list! We'll email you when your invite is ready.");
-        } else {
-          show('Something went wrong. Please try again in a moment.', true);
-        }
-      } catch (e) {
-        show("Couldn't connect. Please check your internet and try again.", true);
-      } finally {
-        button.disabled = false;
-      }
-    });
-
-    // Become a Founding Creator: saves the request in Supabase (the creator_applications table).
-    // Like the beta list, the site can only add requests, never read them; they're in the
-    // Supabase dashboard, Table Editor, creator_applications.
-    const creatorForm = document.getElementById('creator-form');
-    const creatorEmail = document.getElementById('creator-email');
-    const creatorHandle = document.getElementById('creator-handle');
-    const creatorAgree = document.getElementById('creator-agree');
-    const creatorMessage = document.getElementById('creator-message');
-    const creatorButton = creatorForm.querySelector('button');
-
-    function showCreator(text, isError) {
-      creatorMessage.textContent = text;
-      creatorMessage.classList.toggle('error', !!isError);
-    }
-
-    // Accepts "@name", "name", or a pasted profile link, and keeps just the username.
-    function cleanHandle(text) {
-      return text.trim()
-        .replace(/^https?:\/\//i, '')
-        .replace(/^(www\.)?(instagram\.com|tiktok\.com)\//i, '')
-        .replace(/^@/, '')
-        .replace(/[/?].*$/, '');
-    }
-
-    creatorForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const email = creatorEmail.value.trim().toLowerCase();
-      const handle = cleanHandle(creatorHandle.value);
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showCreator('Please enter a valid email address.', true);
-        return;
-      }
-      if (!/^[A-Za-z0-9._]{1,30}$/.test(handle)) {
-        showCreator('Please enter your Instagram or TikTok handle, like @yourname.', true);
-        return;
-      }
-      if (!creatorAgree.checked) {
-        showCreator('Please confirm you’re 18 or older and agree to the Community Rules.', true);
-        return;
-      }
-      creatorButton.disabled = true;
-      showCreator('');
-      try {
-        const res = await fetch(SUPABASE_URL + '/rest/v1/creator_applications', {
-          method: 'POST',
-          headers: {
-            apikey: SUPABASE_KEY,
-            'Content-Type': 'application/json',
-            Prefer: 'return=minimal',
-          },
-          body: JSON.stringify({ email, handle, agreed_rules: true }),
-        });
-        // 409 means this email already asked, which is fine.
-        if (res.ok || res.status === 409) {
-          creatorForm.reset();
-          showCreator('Thanks! We’ll be in touch soon.');
-        } else {
-          showCreator('Something went wrong. Please try again in a moment.', true);
-        }
-      } catch (e) {
-        showCreator("Couldn't connect. Please check your internet and try again.", true);
-      } finally {
-        creatorButton.disabled = false;
-      }
-    });
-  </script>
+  <script src="forms.js"></script>
   <footer>
     <div class="wrap">
       <div class="links">

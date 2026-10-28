@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Security: only Pivvy's own scripts run, and the forms only talk to Supabase. GitHub Pages
+       can't send security headers, so these go in each page. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src https://vcmgnqhxerrbdcdkpgfi.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Support · Pivvy</title>
   <meta name="description" content="Get help with Pivvy, report a problem, or contact us at support@getpivvy.com.">
   <link rel="icon" type="image/png" href="images/favicon.png">
