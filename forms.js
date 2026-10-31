@@ -1,4 +1,4 @@
-// The Home page forms: Join the beta and Become a Founding Creator.
+// The Home page forms: Join the beta, Become a Founding Creator, and the brand waitlist.
 // Join the beta: saves the email in Supabase (the beta_signups table). The site can only add
 // emails, never read them; the list is in the Supabase dashboard, Table Editor, beta_signups.
 // This key is Supabase's publishable key, which is safe to show on a web page.
@@ -139,5 +139,76 @@ creatorForm.addEventListener('submit', async (event) => {
     showCreator("Couldn't connect. Please check your internet and try again.", true);
   } finally {
     creatorButton.disabled = false;
+  }
+});
+
+// Join the brand waitlist: saves the brand in Supabase (the brand_waitlist table). Like the other
+// forms, the site can only add brands, never read them; they're in the Supabase dashboard, Table
+// Editor, brand_waitlist, and the owner gets an email at support@getpivvy.com about each one.
+const brandForm = document.getElementById('brand-form');
+const brandName = document.getElementById('brand-name');
+const brandEmail = document.getElementById('brand-email');
+const brandWebsite = document.getElementById('brand-website');
+const brandSizes = document.getElementById('brand-sizes');
+const brandMessage = document.getElementById('brand-message');
+const brandButton = brandForm.querySelector('button');
+
+function showBrand(text, isError) {
+  brandMessage.textContent = text;
+  brandMessage.classList.toggle('error', !!isError);
+}
+
+brandForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const brand_name = brandName.value.trim();
+  const email = brandEmail.value.trim().toLowerCase();
+  const website = brandWebsite.value.trim();
+  const sizes = brandSizes.value.trim();
+  if (!brand_name) {
+    showBrand('Please enter your brand name.', true);
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showBrand('Please enter a valid email address.', true);
+    return;
+  }
+  if (!/^\S{2,200}$/.test(website)) {
+    showBrand('Please enter your website or Instagram, like yourbrand.com or @yourbrand.', true);
+    return;
+  }
+  if (!sizes) {
+    showBrand('Please enter the sizes you carry, like XS to 3X.', true);
+    return;
+  }
+  if (looksLikeABot(brandForm)) {
+    brandForm.reset();
+    showBrand('Thanks! We’ll be in touch soon.');
+    return;
+  }
+  brandButton.disabled = true;
+  showBrand('');
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/brand_waitlist', {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ brand_name, email, website, sizes }),
+    });
+    // 409 means this email is already on the waitlist, which is fine.
+    if (res.ok || res.status === 409) {
+      brandForm.reset();
+      showBrand('Thanks! We’ll be in touch soon.');
+    } else if (await tooManySignups(res)) {
+      showBrand(TOO_MANY, true);
+    } else {
+      showBrand('Something went wrong. Please try again in a moment.', true);
+    }
+  } catch (e) {
+    showBrand("Couldn't connect. Please check your internet and try again.", true);
+  } finally {
+    brandButton.disabled = false;
   }
 });

@@ -29,6 +29,7 @@
         <a href="rules.html">Community Rules</a>
         <a href="support.html">Support</a>
         <a href="#creators">Founding Creator</a>
+        <a href="#brands">For Brands</a>
       </nav>
     </div>
   </header>
@@ -91,6 +92,26 @@
         </form>
         <p class="message" id="creator-message" role="status"></p>
         <p class="note">We only use this to review your request and contact you about it. See our <a href="https://fittap.github.io/privacy/">privacy policy</a>.</p>
+      </section>
+
+      <section class="beta card" id="brands">
+        <p class="label">For Brands</p>
+        <h2 class="serif">Sell on Pivvy</h2>
+        <p>Shopping is coming to Pivvy. Show your clothes on models with real sizing, so shoppers can see how they’ll fit before they buy.</p>
+        <form id="brand-form" class="stack" novalidate>
+          <label class="label" for="brand-name">Brand name</label>
+          <input id="brand-name" type="text" name="brand" placeholder="Your brand" autocomplete="organization" required maxlength="100">
+          <label class="label" for="brand-email">Email</label>
+          <input id="brand-email" type="email" name="email" placeholder="you@yourbrand.com" autocomplete="email" required maxlength="254">
+          <label class="label" for="brand-website">Website or Instagram</label>
+          <input id="brand-website" type="text" name="website" placeholder="yourbrand.com or @yourbrand" autocomplete="url" autocapitalize="none" spellcheck="false" required maxlength="200">
+          <label class="label" for="brand-sizes">Sizes you carry</label>
+          <input id="brand-sizes" type="text" name="sizes" placeholder="XS to 3X, 0 to 24" autocomplete="off" required maxlength="200">
+          <div class="trap" aria-hidden="true"><label>Leave this empty <input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+          <button class="button" type="submit">Join the brand waitlist</button>
+        </form>
+        <p class="message" id="brand-message" role="status"></p>
+        <p class="note">We only use this to contact you about selling on Pivvy. See our <a href="https://fittap.github.io/privacy/">privacy policy</a>.</p>
       </section>
     </div>
   </main>
