@@ -1,5 +1,7 @@
 /* The Pivvy website. Same look as the app (mobile/src/lib/theme.ts): white and black, with neutral
-   grays (no brown or warm tint), soft rounded cards, the Playfair Display serif for titles, small letter-spaced capital labels. */
+   grays (no brown or warm tint), soft rounded cards, Playfair Display for the PIVVY wordmark and
+   headings, the iPhone's own clean sans serif (like the app) for body text, menu links, and buttons,
+   and small letter-spaced capital labels. */
 
 :root {
   /* Every color on the site, in one place. */
@@ -39,11 +41,8 @@ nav a { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: 
 nav a:hover, nav a[aria-current="page"] { color: var(--text); }
 nav a[aria-current="page"] { border-bottom: 2px solid var(--text); }
 
-/* The wordmark, like the app's (components/Wordmark.tsx): the dot on the last i is a small open circle. */
-.wordmark { font-family: var(--serif); font-style: italic; font-size: 30px; line-height: 1; margin: 0; }
-.wordmark .i { position: relative; }
-.wordmark .ring { position: absolute; left: calc(0.257em - 0.085em); top: calc(0.372em - 0.085em);
-                  width: 0.17em; height: 0.17em; border: 0.04em solid currentColor; border-radius: 50%; }
+/* The wordmark, like the app's PIVVY: capitals in Playfair Display, pure black, widely spaced. */
+.wordmark { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: 0.28em; color: var(--text); margin: 0; }
 
 h1, h2.serif { font-family: var(--serif); font-weight: 400; }
 h1 { font-size: 40px; line-height: 1.15; margin: 0 0 12px; }
