@@ -1,13 +1,14 @@
-/* The Pivvy website. Same look as the app (mobile/src/lib/theme.ts): warm cream, dark espresso,
-   soft rounded cards, the Playfair Display serif for titles, small letter-spaced capital labels. */
+/* The Pivvy website. Same look as the app (mobile/src/lib/theme.ts): white and black, with neutral
+   grays (no brown or warm tint), soft rounded cards, the Playfair Display serif for titles, small letter-spaced capital labels. */
 
 :root {
-  --bg: #FAF7F2;
-  --card: #F3EEE7;
-  --text: #2B2421;
-  --muted: #81776F;
-  --border: #E3DCD2;
-  --accent: #2E2623;
+  /* Every color on the site, in one place. */
+  --bg: #FFFFFF;
+  --card: #FFFFFF;
+  --text: #000000;
+  --muted: #666666;
+  --border: #E6E6E6;
+  --accent: #000000;
   --error: #A23B3B;
   --serif: "Playfair Display", Georgia, serif;
 }
@@ -58,7 +59,7 @@ main { padding: 48px 0 64px; }
 .card p:last-child, .card ul:last-child { margin-bottom: 0; }
 .card ul { margin: 0 0 10px; padding-left: 20px; }
 
-.button { display: inline-block; background: var(--accent); color: #fff; border: 0; border-radius: 999px;
+.button { display: inline-block; background: var(--accent); color: #FFFFFF; border: 0; border-radius: 999px;
           padding: 13px 26px; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
 .button:disabled { opacity: 0.6; cursor: default; }
 
@@ -80,7 +81,7 @@ main { padding: 48px 0 64px; }
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .steps .card { margin: 0; }
 
-/* Home: Join the beta. */
+/* Home: Get early access. */
 .beta { text-align: center; margin-top: 48px; }
 .beta h2 { font-size: 32px; margin: 0 0 8px; }
 .beta form { display: flex; gap: 8px; max-width: 460px; margin: 16px auto 0; }

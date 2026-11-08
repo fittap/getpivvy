@@ -1,5 +1,5 @@
-// The Home page forms: Join the beta, Become a Founding Creator, and the brand waitlist.
-// Join the beta: saves the email in Supabase (the beta_signups table). The site can only add
+// The Home page forms: Get early access (it was Join the beta), Become a Founding Creator, and the brand waitlist.
+// Get early access: saves the email in Supabase (the beta_signups table). The site can only add
 // emails, never read them; the list is in the Supabase dashboard, Table Editor, beta_signups.
 // This key is Supabase's publishable key, which is safe to show on a web page.
 const SUPABASE_URL = 'https://vcmgnqhxerrbdcdkpgfi.supabase.co';
