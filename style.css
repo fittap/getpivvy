@@ -1,6 +1,6 @@
 /* The Pivvy website. Same look as the app (mobile/src/lib/theme.ts): white and black, with neutral
-   grays (no brown or warm tint), soft rounded cards, Playfair Display for the PIVVY wordmark and
-   headings, the iPhone's own clean sans serif (like the app) for body text, menu links, and buttons,
+   grays (no brown or warm tint), soft rounded cards, the PIVVY logo picture at the top, Playfair
+   Display for headings, the iPhone's own clean sans serif (like the app) for body text, menu links, and buttons,
    and small letter-spaced capital labels. */
 
 :root {
@@ -41,8 +41,9 @@ nav a { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: 
 nav a:hover, nav a[aria-current="page"] { color: var(--text); }
 nav a[aria-current="page"] { border-bottom: 2px solid var(--text); }
 
-/* The wordmark, like the app's PIVVY: capitals in Playfair Display, pure black, widely spaced. */
-.wordmark { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: 0.28em; color: var(--text); margin: 0; }
+/* The official PIVVY logo (images/pivvy-wordmark-black.png, the same picture as the app's; there's a
+   white one, pivvy-wordmark-white.png, for dark backgrounds), next to the dress form icon. */
+.brand img.wordmark { width: auto; height: 26px; border-radius: 0; }
 
 h1, h2.serif { font-family: var(--serif); font-weight: 400; }
 h1 { font-size: 40px; line-height: 1.15; margin: 0 0 12px; }
